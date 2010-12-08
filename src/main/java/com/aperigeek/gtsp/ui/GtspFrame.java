@@ -11,13 +11,20 @@
 
 package com.aperigeek.gtsp.ui;
 
+import com.aperigeek.gtsp.AddressesDAO;
 import com.aperigeek.gtsp.beans.Address;
 import com.aperigeek.gtsp.geo.Location;
 import com.aperigeek.gtsp.geo.LocationProvider;
 import com.aperigeek.gtsp.geo.MapProvider;
 import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -31,6 +38,10 @@ public class GtspFrame extends javax.swing.JFrame {
     private MapProvider mapProvider;
 
     private AddressListModel addressListModel = new AddressListModel();
+
+    private AddressesDAO addressesDAO;
+
+    private JFileChooser fileChooser;
 
     /** Creates new form GtspFrame */
     public GtspFrame() {
@@ -76,6 +87,10 @@ public class GtspFrame extends javax.swing.JFrame {
         mapLabel = new javax.swing.JLabel();
         addAddressButton = new javax.swing.JButton();
         removeAddressButton = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
+        openMenuItem = new javax.swing.JMenuItem();
+        saveAsMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -107,6 +122,30 @@ public class GtspFrame extends javax.swing.JFrame {
             }
         });
 
+        fileMenu.setText("File");
+
+        openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        openMenuItem.setText("Open");
+        openMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(openMenuItem);
+
+        saveAsMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        saveAsMenuItem.setText("Save as");
+        saveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveAsMenuItem);
+
+        jMenuBar1.add(fileMenu);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -128,9 +167,9 @@ public class GtspFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(mapPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
+                    .addComponent(mapPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(addressesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                        .addComponent(addressesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(addAddressButton)
@@ -168,13 +207,55 @@ public class GtspFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_addressesListValueChanged
 
+    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+        JFileChooser chooser = getFileChooser();
+        int choice = chooser.showOpenDialog(this);
+        if (choice == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            addressesDAO = new AddressesDAO(file);
+            try {
+                List<Address> addresses = addressesDAO.loadAddresses();
+                addressListModel.removeAllAddresses();
+                addressListModel.addAddresses(addresses);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error loading file", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_openMenuItemActionPerformed
+
+    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
+        JFileChooser chooser = getFileChooser();
+        int choice = chooser.showSaveDialog(this);
+        if (choice == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            addressesDAO = new AddressesDAO(file);
+            try {
+                addressesDAO.saveAddresses(addressListModel.getAddresses());
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex, "Error saving file", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_saveAsMenuItemActionPerformed
+
+    public JFileChooser getFileChooser() {
+        if (fileChooser == null) {
+            fileChooser = new JFileChooser();
+        }
+
+        return fileChooser;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addAddressButton;
     private javax.swing.JList addressesList;
     private javax.swing.JScrollPane addressesListScrollPane;
+    private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JLabel mapLabel;
     private javax.swing.JPanel mapPane;
+    private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JButton removeAddressButton;
+    private javax.swing.JMenuItem saveAsMenuItem;
     // End of variables declaration//GEN-END:variables
 
 }

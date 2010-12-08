@@ -5,11 +5,13 @@
 
 package com.aperigeek.gtsp.geo;
 
+import java.io.Serializable;
+
 /**
  *
  * @author viv
  */
-public class Location {
+public class Location implements Serializable {
 
     private double latitude;
 
@@ -20,6 +22,7 @@ public class Location {
         this.longitude = longitude;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -37,6 +40,7 @@ public class Location {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int hash = 5;
         hash = 67 * hash + (int) (Double.doubleToLongBits(this.latitude) ^ (Double.doubleToLongBits(this.latitude) >>> 32));

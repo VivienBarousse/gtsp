@@ -7,6 +7,7 @@ package com.aperigeek.gtsp.ui;
 
 import com.aperigeek.gtsp.beans.Address;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.AbstractListModel;
 
@@ -31,10 +32,28 @@ public class AddressListModel extends AbstractListModel {
         fireIntervalAdded(this, newIndex, newIndex);
     }
 
+    public void addAddresses(List<Address> addresses) {
+        int firstNewIndex = addresses.size();
+        this.addresses.addAll(addresses);
+        fireIntervalAdded(this, firstNewIndex, firstNewIndex + addresses.size() - 1);
+    }
+
     public void removeAddress(Address address) {
         int oldInterval = addresses.indexOf(address);
         addresses.remove(address);
         fireIntervalRemoved(this, oldInterval, oldInterval);
+    }
+
+    public void removeAllAddresses() {
+        int oldSize = addresses.size();
+        if (oldSize > 0) {
+            addresses.clear();
+            fireIntervalRemoved(this, 0, oldSize - 1);
+        }
+    }
+
+    public List<Address> getAddresses() {
+        return Collections.unmodifiableList(addresses);
     }
 
     @Override

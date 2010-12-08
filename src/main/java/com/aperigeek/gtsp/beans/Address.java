@@ -6,12 +6,13 @@
 package com.aperigeek.gtsp.beans;
 
 import com.aperigeek.gtsp.geo.Location;
+import java.io.Serializable;
 
 /**
  *
  * @author viv
  */
-public class Address {
+public class Address implements Serializable {
 
     private String address;
 
