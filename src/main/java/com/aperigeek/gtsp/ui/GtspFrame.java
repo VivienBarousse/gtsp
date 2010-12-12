@@ -10,7 +10,7 @@
  */
 package com.aperigeek.gtsp.ui;
 
-import com.aperigeek.gtsp.AddressesDAO;
+import com.aperigeek.gtsp.io.AddressesDAO;
 import com.aperigeek.gtsp.beans.Address;
 import com.aperigeek.gtsp.geo.Location;
 import com.aperigeek.gtsp.geo.LocationProvider;

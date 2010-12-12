@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.aperigeek.gtsp;
+package com.aperigeek.gtsp.io;
 
 import com.aperigeek.gtsp.beans.Address;
 import java.io.File;
